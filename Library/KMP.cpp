@@ -1,56 +1,40 @@
-//
-// Created by STW on 23-Jun-25.
-//
+vector<int> computePrefix(const string &s) {
+    int n = s.size();
+    vector<int> pi(n);
+    for (int i = 1; i < n; i++) {
+        int j = pi[i - 1];
+        while (j > 0 && s[i] != s[j]) j = pi[j - 1];
+        if (s[i] == s[j]) j++;
+        pi[i] = j;
+    }
+    return pi;
+}
 
+bool kmp(const string &text, const string &pattern) {
+    vector<int> pi = computePrefix(pattern);
+    int j = 0;
+    for (int i = 0; i < text.size(); i++) {
+        while (j > 0 && text[i] != pattern[j]) j = pi[j - 1];
+        if (text[i] == pattern[j]) j++;
+        if (j == pattern.size()) return true; // match found
+    }
+    return false;
+}
 
-//
-// vector<int> computePrefix(string pat) {
-//     int m = pat.size();
-//     vector<int> longestPrefix(m);
-//     for (int i = 1, k = 0; i < m; i++) {
-//         while (k > 0 && pat[k] != pat[i]) {
-//             k = longestPrefix[k - 1];
-//         }
-//         if (pat[i] == pat[k]) {
-//             longestPrefix[i] = ++k;
-//         } else {
-//             longestPrefix[i] = k;
-//         }
-//     }
-//     return longestPrefix;
-// }
-//
-// bool kmp(string str, string pat) {
-//     int n = str.size(), m = pat.size();
-//     vector<int> longestPrefix = computePrefix(pat);
-//     for (int i = 1, k = 0; i < n - 1; i++) {
-//         while (k > 0 && pat[k] != str[i]) {
-//             k = longestPrefix[k - 1];
-//         }
-//         if (str[i] == pat[k]) {
-//             k++;
-//         }
-//         if (k == m) {
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-//
-// void solve() {
-//     string s; cin >> s;
-//     int n = s.size();
-//
-//     vector<int> pi = computePrefix(s);
-//     vector<int> ans(n + 1, 1);
-//
-//
-//     for (int i = 0; i < n; i++) {
-//         ans[pi[i]] ++;
-//     }
-//     for(int i = n - 1; i > 0; i--) {
-//         ans[pi[i - 1]] += ans[i] - 1;
-//     }
-//
-// }
-//
+void solve() {
+    string s;
+    cin >> s;
+    int n = s.size();
+    vector<int> pi = computePrefix(s);
+    vector<int> freq(n + 1); // count of each prefix length
+
+    for (int i = 0; i < n; i++)
+        freq[pi[i]]++;
+
+    for (int i = n - 1; i > 0; i--)
+        freq[pi[i - 1]] += freq[i];
+
+    for (int i = 0; i <= n; i++)
+        freq[i]++; // include the prefix itself
+}
+
