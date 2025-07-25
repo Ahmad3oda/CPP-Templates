@@ -1,43 +1,27 @@
-//
-// Created by STW on 04-Jan-25.
-//
-
-
-
-
+#include <bits/stdc++.h>
+using namespace std;
 
 // Bellman Ford
 
-//
-//
-// #include <bits/stdc++.h>
-// using namespace std;
-//
-//
-// const int INF = 1e9;
-// int n;
-// vector<int> dis(n, INF);
-// vector<vector<pair<int, int>>> adj;
-//
-// bool relax() {
-//     bool fnd = false;
-//
-//     for(int u = 1; u <= n; u++) {
-//         for(auto &[v, w]: adj[u]) {
-//             if(dis[u] + w < dis[v]) {
-//                 fnd = true;
-//                 dis[v] = dis[u] + w;
-//             }
-//         }
-//     }
-//     return fnd;
-// }
-//
-// bool bellmanFord(int src) {
-//     dis[src] = 0;
-//
-//     for (int i = 0; i < n - 1; i++) {
-//         if(!relax()) return false;
-//     }
-//     return relax();
-// }
+const int INF = 1e9;
+int n;
+vector<int> dis(n, INF);
+vector<vector<pair<int, int>>> adj;
+
+bool bellman_ford(int src) {
+    dis.assign(n + 1, INF);
+    dis[src] = 0;
+
+    for (int i = 1; i < n; i++)
+        for (int u = 1; u <= n; u++)
+            for (auto &[v, w] : adj[u])
+                if (dis[u] + w < dis[v])
+                    dis[v] = dis[u] + w;
+
+    for (int u = 1; u <= n; u++)
+        for (auto &[v, w] : adj[u])
+            if (dis[u] + w < dis[v])
+                return true; // negative cycle
+
+    return false;
+}
